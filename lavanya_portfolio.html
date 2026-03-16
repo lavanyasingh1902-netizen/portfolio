@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lavanya Singh — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#12121a;--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--white:#f0eee8;--muted:#7a7a8a;--border:rgba(201,168,76,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Outfit',sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:difference;transform:translate(-50%,-50%);transition:transform .15s}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(201,168,76,.6);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .4s cubic-bezier(.23,1,.32,1)}
+#bg-canvas{position:fixed;inset:0;z-index:0;opacity:.35}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 60px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(10,10,15,.96),transparent);backdrop-filter:blur(6px)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:.14em;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .3s;font-family:'DM Mono',monospace}
+.nav-links a:hover{color:var(--gold)}
+section{position:relative;z-index:1}
+#hero{min-height:100vh;display:flex;align-items:center;padding:0 10%}
+.hero-content{max-width:640px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:14px;opacity:0;animation:fadeUp .8s ease .3s forwards}
+.hero-tag::before{content:'';display:inline-block;width:36px;height:1px;background:var(--gold)}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,8vw,92px);font-weight:300;line-height:.96;margin-bottom:10px;opacity:0;animation:fadeUp .9s ease .5s forwards}
+.hero-name span{color:var(--gold);font-style:italic}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.5vw,26px);font-weight:300;font-style:italic;color:var(--muted);margin-bottom:32px;opacity:0;animation:fadeUp .9s ease .7s forwards;letter-spacing:.04em}
+.hero-desc{font-size:14px;line-height:1.95;color:rgba(240,238,232,.65);max-width:460px;margin-bottom:44px;opacity:0;animation:fadeUp .9s ease .9s forwards}
+.hero-cta{display:flex;gap:18px;flex-wrap:wrap;opacity:0;animation:fadeUp .9s ease 1.1s forwards}
+.btn-primary{padding:13px 34px;background:var(--gold);color:var(--bg);font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 40px rgba(201,168,76,.3)}
+.btn-outline{padding:13px 34px;background:transparent;color:var(--white);font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:all .3s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.hero-3d{position:absolute;right:8%;top:50%;transform:translateY(-50%);width:360px;height:360px;opacity:0;animation:fadeIn 1.5s ease 1s forwards}
+#hero-canvas{width:100%;height:100%}
+.scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeIn 1s ease 2s forwards}
+.scroll-hint span{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease infinite}
+.stats-strip{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-item{padding:28px 32px;border-right:1px solid var(--border);transition:background .3s}
+.stat-item:last-child{border-right:none}
+.stat-item:hover{background:var(--gold-dim)}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:6px}
+.stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.section-header{margin-bottom:60px}
+.section-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.section-tag::before{content:'';display:inline-block;width:22px;height:1px;background:var(--gold)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.06}
+.section-title em{color:var(--gold);font-style:italic}
+#about{padding:120px 10%}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.about-text p{font-size:14px;line-height:1.95;color:rgba(240,238,232,.65);margin-bottom:18px}
+.contact-cards{display:grid;gap:10px;margin-top:32px}
+.contact-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);transition:all .3s;position:relative;overflow:hidden}
+.contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transform-origin:bottom;transition:transform .3s}
+.contact-card:hover::before{transform:scaleY(1)}
+.contact-card:hover{border-color:var(--gold);background:var(--gold-dim)}
+.contact-icon{width:34px;height:34px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.contact-info span{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
+.contact-info p{font-size:12px;color:var(--white);margin:0}
+#skills{padding:140px 10% 160px;background:var(--bg2);clip-path:polygon(0 3%,100% 0,100% 97%,0 100%)}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.skill-card{background:var(--bg);border:1px solid var(--border);padding:32px 28px;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.23,1,.32,1);cursor:default}
+.skill-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-dim),transparent 60%);opacity:0;transition:opacity .4s}
+.skill-card:hover{transform:translateY(-8px) rotateX(3deg);border-color:var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.skill-card:hover::after{opacity:1}
+.skill-icon{font-size:26px;margin-bottom:18px;position:relative;z-index:1}
+.skill-name{font-size:15px;font-weight:500;color:var(--white);margin-bottom:8px;position:relative;z-index:1}
+.skill-desc{font-size:12px;color:var(--muted);line-height:1.7;position:relative;z-index:1}
+.skill-level{margin-top:18px;position:relative;z-index:1}
+.skill-bar-bg{width:100%;height:1.5px;background:rgba(201,168,76,.12);border-radius:2px;overflow:hidden}
+.skill-bar-fill{height:100%;background:linear-gradient(to right,var(--gold),var(--gold2));transform-origin:left;transform:scaleX(0);transition:transform 1.2s cubic-bezier(.23,1,.32,1)}
+.skill-card.visible .skill-bar-fill{transform:scaleX(1)}
+#experience{padding:120px 10%}
+.timeline{position:relative;padding-left:48px}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),transparent 90%)}
+.timeline-item{position:relative;margin-bottom:56px;opacity:0;transform:translateX(-16px);transition:all .7s cubic-bezier(.23,1,.32,1)}
+.timeline-item.visible{opacity:1;transform:translateX(0)}
+.timeline-dot{position:absolute;left:-54px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--gold);transition:all .3s}
+.timeline-item:hover .timeline-dot{background:var(--gold);box-shadow:0 0 18px rgba(201,168,76,.5)}
+.timeline-date{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.timeline-role{font-size:19px;font-weight:500;color:var(--white);margin-bottom:4px}
+.timeline-company{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--muted);margin-bottom:14px}
+.timeline-desc{font-size:13px;line-height:1.85;color:rgba(240,238,232,.58);max-width:580px}
+#education{padding:140px 10% 160px;background:var(--bg2);clip-path:polygon(0 3%,100% 0,100% 97%,0 100%)}
+.edu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.edu-card{background:var(--bg);border:1px solid var(--border);padding:32px 26px;transition:all .4s;opacity:0;transform:translateY(28px)}
+.edu-card.visible{opacity:1;transform:translateY(0)}
+.edu-card:hover{border-color:var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateY(-6px)}
+.edu-year{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:rgba(201,168,76,.15);line-height:1;margin-bottom:14px;transition:color .3s}
+.edu-card:hover .edu-year{color:rgba(201,168,76,.28)}
+.edu-level{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.edu-school{font-size:15px;font-weight:500;color:var(--white);margin-bottom:4px}
+.edu-score{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--white);margin:14px 0 4px}
+.edu-score-label{font-size:11px;color:var(--muted)}
+#certificates{padding:120px 10%}
+.cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.cert-card{background:var(--bg2);border:1px solid var(--border);padding:26px;display:flex;gap:18px;align-items:flex-start;transition:all .3s;position:relative;overflow:hidden;opacity:0;transform:translateY(18px)}
+.cert-card.visible{opacity:1;transform:translateY(0)}
+.cert-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform .4s}
+.cert-card:hover::before{transform:scaleX(1)}
+.cert-card:hover{border-color:var(--gold);background:var(--gold-dim);transform:translateY(-4px);box-shadow:0 14px 50px rgba(0,0,0,.4)}
+.cert-badge{width:42px;height:42px;flex-shrink:0;border-radius:8px;background:var(--gold-dim);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px}
+.cert-name{font-size:14px;font-weight:500;color:var(--white);margin-bottom:4px;line-height:1.3}
+.cert-issuer{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
+.cert-org{font-size:11px;color:var(--muted)}
+#references{padding:120px 10% 100px;background:var(--bg2);clip-path:polygon(0 2%,100% 0,100% 100%,0 100%);padding-top:140px}
+.ref-card{max-width:620px;background:var(--bg);border:1px solid var(--border);padding:44px;position:relative;overflow:hidden}
+.ref-card::before{content:'\201C';font-family:'Cormorant Garamond',serif;font-size:180px;color:rgba(201,168,76,.06);position:absolute;top:-36px;left:16px;line-height:1;pointer-events:none}
+.ref-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;line-height:1.65;color:rgba(240,238,232,.82);margin-bottom:30px;position:relative;z-index:1}
+.ref-person{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.ref-avatar{width:46px;height:46px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);flex-shrink:0}
+.ref-name{font-size:14px;font-weight:500;color:var(--white);margin-bottom:2px}
+.ref-role{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.ref-period{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--gold);margin-top:3px}
+footer{padding:40px 10%;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--gold);letter-spacing:.12em}
+.footer-copy{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.footer-links{display:flex;gap:22px}
+.footer-links a{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .3s}
+.footer-links a:hover{color:var(--gold)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
+@media(max-width:900px){nav{padding:18px 24px}.nav-links{display:none}#hero{padding:0 6%}.hero-3d{display:none}.about-grid,.skills-grid,.edu-grid,.cert-grid{grid-template-columns:1fr}.stats-strip{grid-template-columns:repeat(2,1fr)}#about,#experience,#certificates{padding:80px 6%}#skills,#education,#references{padding:100px 6%}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <a class="nav-logo" href="#hero">L·Singh</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li><li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li><li><a href="#education">Education</a></li>
+    <li><a href="#certificates">Certificates</a></li><li><a href="#references">References</a></li>
+  </ul>
+</nav>
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Open to Opportunities</div>
+    <h1 class="hero-name">Lavanya<br><span>Singh</span></h1>
+    <p class="hero-title">BA Graduate · Data & Digital Marketing</p>
+    <p class="hero-desc">A detail-oriented professional with expertise in data entry, Excel & Tally, and a passion for digital marketing — merging analytical precision with creative problem-solving.</p>
+    <div class="hero-cta">
+      <a href="mailto:lavisingh191102@gmail.com" class="btn-primary">Get In Touch</a>
+      <a href="#experience" class="btn-outline">View Work</a>
+    </div>
+  </div>
+  <div class="hero-3d"><canvas id="hero-canvas" width="360" height="360"></canvas></div>
+  <div class="scroll-hint"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
+<div class="stats-strip">
+  <div class="stat-item"><div class="stat-num">91.4<span style="font-size:22px">%</span></div><div class="stat-label">Academic Score (12th)</div></div>
+  <div class="stat-item"><div class="stat-num">3+</div><div class="stat-label">Internships</div></div>
+  <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Certifications</div></div>
+  <div class="stat-item"><div class="stat-num">1+</div><div class="stat-label">Years Experience</div></div>
+</div>
+<section id="about">
+  <div class="section-header"><div class="section-tag">About Me</div><h2 class="section-title">Driven by data,<br><em>inspired by impact</em></h2></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a dedicated BA graduate from D.A.V. College, Muzaffarnagar, combining strong foundational skills in data management with a genuine passion for digital marketing and brand strategy.</p>
+      <p>My journey spans accounting data entry, brand promotions as a Team Leader at Viral Fission, and exploring the frontier of Web3 gaming with KGeN — each experience shaping a multidisciplinary perspective.</p>
+      <p>I thrive in dynamic team environments where analytical rigor meets creative execution, and I continuously expand my knowledge in AI, digital advertising, and technology-driven solutions.</p>
+    </div>
+    <div>
+      <div class="contact-cards">
+        <div class="contact-card"><div class="contact-icon">📍</div><div class="contact-info"><span>Location</span><p>Muzaffarnagar, Uttar Pradesh — 251001</p></div></div>
+        <div class="contact-card"><div class="contact-icon">✉️</div><div class="contact-info"><span>Email</span><p>lavisingh191102@gmail.com</p></div></div>
+          <!-- Phone number removed for privacy before publishing -->
+        <div class="contact-card"><div class="contact-icon">🎓</div><div class="contact-info"><span>Education</span><p>BA — D.A.V. College, Muzaffarnagar</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="skills">
+  <div class="section-header"><div class="section-tag">Capabilities</div><h2 class="section-title">Skills &amp; <em>Expertise</em></h2></div>
+  <div class="skills-grid">
+    <div class="skill-card"><div class="skill-icon">📊</div><div class="skill-name">Excel & Data Entry</div><div class="skill-desc">Advanced proficiency in Microsoft Excel for accounting data entry, analysis, and reporting workflows with 1+ year of hands-on experience.</div><div class="skill-level"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase">Proficiency</span><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div></div></div>
+    <div class="skill-card"><div class="skill-icon">🧾</div><div class="skill-name">Tally Software</div><div class="skill-desc">Practical experience with Tally ERP for accounting, inventory management, and maintaining accurate financial records.</div><div class="skill-level"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase">Proficiency</span><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div></div></div>
+    <div class="skill-card"><div class="skill-icon">📣</div><div class="skill-name">Digital Marketing</div><div class="skill-desc">Certified in digital advertising, brand promotions, and community-building through multiple industry internships and campaigns.</div><div class="skill-level"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase">Proficiency</span><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)">78%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div></div></div>
+    <div class="skill-card"><div class="skill-icon">🤖</div><div class="skill-name">AI Prompt Engineering</div><div class="skill-desc">Skilled in crafting effective AI prompts for content generation, automation, and creative problem-solving across platforms.</div><div class="skill-level"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase">Proficiency</span><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)">72%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:72%"></div></div></div></div>
+    <div class="skill-card"><div class="skill-icon">🧩</div><div class="skill-name">Leadership & Teamwork</div><div class="skill-desc">Proven team leadership as TL at Viral Fission — coordinating campaigns, motivating teams, and delivering consistent results.</div><div class="skill-level"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase">Proficiency</span><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)">88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:88%"></div></div></div></div>
+    <div class="skill-card"><div class="skill-icon">💬</div><div class="skill-name">Communication</div><div class="skill-desc">Confident, outspoken communicator — articulate in written and verbal contexts with strong problem analysis capabilities.</div><div class="skill-level"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase">Proficiency</span><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div></div></div>
+  </div>
+</section>
+<section id="experience">
+  <div class="section-header"><div class="section-tag">Work History</div><h2 class="section-title">Professional <em>Experience</em></h2></div>
+  <div class="timeline">
+    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2023 – Present</div><div class="timeline-role">Accounting Data Entry Specialist</div><div class="timeline-company">Independent · Ongoing Role</div><div class="timeline-desc">Managing financial records using Excel and Tally ERP software. Responsible for accurate data entry, reconciliation, and maintaining organized accounting databases with over one year of hands-on experience.</div></div>
+    <div class="timeline-item" style="transition-delay:.15s"><div class="timeline-dot"></div><div class="timeline-date">Nov 2022 – Jun 2023</div><div class="timeline-role">Team Leader — Brand Promotions</div><div class="timeline-company">Viral Fission · Fission Youth Marketing Pvt. Ltd.</div><div class="timeline-desc">Led a team in executing brand promotion campaigns for major brands including Mahindra Rise and Swiggy. Managed campaign logistics, coordinated team activities, and drove measurable brand engagement outcomes across college networks.</div></div>
+    <div class="timeline-item" style="transition-delay:.3s"><div class="timeline-dot"></div><div class="timeline-date">2023</div><div class="timeline-role">Web3 Gaming Community Intern</div><div class="timeline-company">KGeN (Indi GG) · Indi Guild Pvt. Ltd.</div><div class="timeline-desc">Participated in the Web3 gaming ecosystem — playing, testing, and reviewing games for the KGeN platform. Contributed to the Web3 Revolution community as part of the Indigg College Team initiative.</div></div>
+  </div>
+</section>
+<section id="education">
+  <div class="section-header"><div class="section-tag">Academic Background</div><h2 class="section-title">Education &amp; <em>Achievements</em></h2></div>
+  <div class="edu-grid">
+    <div class="edu-card"><div class="edu-year">2019</div><div class="edu-level">10th Grade</div><div class="edu-school">D.S. Public School</div><div class="edu-score">86%</div><div class="edu-score-label">430 / 500 marks</div></div>
+    <div class="edu-card" style="transition-delay:.1s"><div class="edu-year">2021</div><div class="edu-level">12th Grade</div><div class="edu-school">D.S. Public School</div><div class="edu-score">91.4%</div><div class="edu-score-label">Outstanding performance</div></div>
+    <div class="edu-card" style="transition-delay:.2s"><div class="edu-year">2024</div><div class="edu-level">Bachelor of Arts</div><div class="edu-school">D.A.V. College, Muzaffarnagar</div><div class="edu-score" style="font-size:20px;margin-top:10px">Completed</div><div class="edu-score-label">BA Graduate · Uttar Pradesh</div></div>
+  </div>
+</section>
+<section id="certificates">
+  <div class="section-header"><div class="section-tag">Credentials</div><h2 class="section-title">Certifications &amp; <em>Recognition</em></h2></div>
+  <div class="cert-grid">
+    <div class="cert-card"><div class="cert-badge">🏅</div><div><div class="cert-issuer">Aleph · 2023</div><div class="cert-name">Digital Ad Certificate — Digital Ad Expert</div><div class="cert-org">Certified expertise in digital advertising strategy and execution</div></div></div>
+    <div class="cert-card" style="transition-delay:.1s"><div class="cert-badge">🚗</div><div><div class="cert-issuer">Mahindra Rise · Viral Fission</div><div class="cert-name">Mahindra Internship Certificate</div><div class="cert-org">TogetherWeRise campaign — brand promotion specialist</div></div></div>
+    <div class="cert-card" style="transition-delay:.15s"><div class="cert-badge">🍜</div><div><div class="cert-issuer">Swiggy · Viral Fission</div><div class="cert-name">Swiggy Internship Certificate</div><div class="cert-org">Web3 Revolution initiative — digital community growth</div></div></div>
+    <div class="cert-card" style="transition-delay:.2s"><div class="cert-badge">🎮</div><div><div class="cert-issuer">KGeN · Indi Guild Pvt. Ltd.</div><div class="cert-name">Indi Guild Internship Certificate</div><div class="cert-org">Indigg College Team — Web3 gaming testing and review</div></div></div>
+  </div>
+</section>
+<section id="references">
+  <div class="section-header"><div class="section-tag">References</div><h2 class="section-title">Trusted <em>Voices</em></h2></div>
+  <div class="ref-card">
+    <p class="ref-text">Lavanya demonstrated exceptional leadership as a Team Leader during our brand promotions. Her commitment, communication skills, and ability to manage campaigns made her a standout contributor to our youth marketing initiatives.</p>
+    <div class="ref-person">
+      <div class="ref-avatar">RS</div>
+      <div><div class="ref-name">Rishabh Shetty</div><div class="ref-role">Co-Founder · Viral Fission / Fission Youth Marketing Pvt. Ltd.</div><div class="ref-period">Nov 2022 – Jun 2023</div></div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-logo">Lavanya Singh</div>
+  <div class="footer-copy">© 2024 · All Rights Reserved</div>
+  <div class="footer-links"><a href="mailto:lavisingh191102@gmail.com">Email</a><a href="tel:+919368834650">Call</a><a href="#hero">Top ↑</a></div>
+</footer>
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar)})();
+document.querySelectorAll('a,button,.skill-card,.cert-card,.edu-card,.contact-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2)';ring.style.transform='translate(-50%,-50%) scale(1.6)'});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.transform='translate(-50%,-50%) scale(1)'});
+});
+const bgC=document.getElementById('bg-canvas'),bgX=bgC.getContext('2d');
+let W,H,pts=[];
+function rb(){W=bgC.width=window.innerWidth;H=bgC.height=window.innerHeight}
+rb();window.addEventListener('resize',rb);
+for(let i=0;i<100;i++)pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,s:Math.random()*1.2+.3,o:Math.random()*.4+.1});
+(function db(){
+  bgX.clearRect(0,0,W,H);
+  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;bgX.beginPath();bgX.arc(p.x,p.y,p.s,0,Math.PI*2);bgX.fillStyle=`rgba(201,168,76,${p.o})`;bgX.fill()});
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<90){bgX.beginPath();bgX.strokeStyle=`rgba(201,168,76,${.05*(1-d/90)})`;bgX.lineWidth=.4;bgX.moveTo(pts[i].x,pts[i].y);bgX.lineTo(pts[j].x,pts[j].y);bgX.stroke()}}
+  requestAnimationFrame(db);
+})();
+const hC=document.getElementById('hero-canvas'),hX=hC.getContext('2d');
+const CX=180,CY=180,R=110;let rot=0,rotY=0;
+(function dh(){
+  hX.clearRect(0,0,360,360);rot+=.007;rotY+=.004;
+  const n=14,pArr=[];
+  for(let i=0;i<n;i++){const th=(i/n)*Math.PI*2;pArr.push({x:R*Math.sin(Math.PI/4)*Math.cos(th+rot),y:R*.55*Math.sin(rot*.8+i*.2),z:R*Math.sin(Math.PI/4)*Math.sin(th+rot)})}
+  const t3={x:0,y:-R*1.15,z:0},b3={x:0,y:R*1.15,z:0};
+  const proj=(x,y,z)=>{const f=480,cY=Math.cos(rotY),sY=Math.sin(rotY),yp=y*cY-z*sY,zp=z*cY+y*sY,sc=f/(f+zp);return{x:CX+x*sc,y:CY+yp*sc,s:sc}};
+  const tp=proj(t3.x,t3.y,t3.z),bp=proj(b3.x,b3.y,b3.z);
+  pArr.forEach((p,i)=>{
+    const pp=proj(p.x,p.y,p.z),a=Math.max(0,Math.min(.6,(pp.s-.55)*1.8));
+    hX.beginPath();hX.moveTo(tp.x,tp.y);hX.lineTo(pp.x,pp.y);hX.strokeStyle=`rgba(201,168,76,${a*.8})`;hX.lineWidth=.7;hX.stroke();
+    hX.beginPath();hX.moveTo(bp.x,bp.y);hX.lineTo(pp.x,pp.y);hX.strokeStyle=`rgba(201,168,76,${a*.5})`;hX.stroke();
+    const pp2=proj(pArr[(i+1)%n].x,pArr[(i+1)%n].y,pArr[(i+1)%n].z);
+    hX.beginPath();hX.moveTo(pp.x,pp.y);hX.lineTo(pp2.x,pp2.y);hX.strokeStyle=`rgba(232,201,122,${a*.9})`;hX.lineWidth=1;hX.stroke();
+  });
+  for(let i=0;i<8;i++){const th=(i/8)*Math.PI*2,r2=R*.6,p1=proj(r2*Math.cos(th+rot*.6),0,r2*Math.sin(th+rot*.6)),p2=proj(r2*Math.cos(th+Math.PI/4+rot*.6),0,r2*Math.sin(th+Math.PI/4+rot*.6)),a=Math.max(0,Math.min(.5,(p1.s-.55)*1.5));hX.beginPath();hX.moveTo(p1.x,p1.y);hX.lineTo(p2.x,p2.y);hX.strokeStyle=`rgba(201,168,76,${a})`;hX.lineWidth=.5;hX.stroke()}
+  const g=hX.createRadialGradient(CX,CY,0,CX,CY,28);g.addColorStop(0,'rgba(201,168,76,.2)');g.addColorStop(1,'transparent');hX.beginPath();hX.arc(CX,CY,28,0,Math.PI*2);hX.fillStyle=g;hX.fill();
+  hX.beginPath();hX.ellipse(CX,CY,R*1.32,R*.3,rot*.45,0,Math.PI*2);hX.strokeStyle='rgba(201,168,76,.12)';hX.lineWidth=.6;hX.setLineDash([4,7]);hX.stroke();hX.setLineDash([]);
+  const oX=CX+R*1.32*Math.cos(rot*2.2),oY=CY+R*.3*Math.sin(rot*2.2);hX.beginPath();hX.arc(oX,oY,2.5,0,Math.PI*2);hX.fillStyle='rgba(232,201,122,.95)';hX.fill();
+  requestAnimationFrame(dh);
+})();
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.15});
+document.querySelectorAll('.timeline-item,.edu-card,.cert-card,.skill-card').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{const hc=document.querySelector('.hero-content');if(hc)hc.style.transform=`translateY(${window.scrollY*.12}px)`});
+</script>
+</body>
+</html>
